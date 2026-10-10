@@ -704,9 +704,15 @@
                     </div>
                     ` : ''}
 
-                    <div class="text-xs text-slate-400 flex items-center gap-1 pt-1">
-                        <i class="ph-bold ph-map-pin text-sm text-ku"></i>
-                        <span>พิกัด: ${issue.lat.toFixed(5)}, ${issue.lng.toFixed(5)}</span>
+                    <!-- แถบพิกัดตำแหน่งพร้อมปุ่ม Google Maps -->
+                    <div class="flex items-center justify-between text-xs text-slate-600 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                        <div class="flex items-center gap-1.5">
+                            <i class="ph-bold ph-map-pin text-base text-ku"></i>
+                            <span class="font-medium">พิกัด: ${issue.lat.toFixed(5)}, ${issue.lng.toFixed(5)}</span>
+                        </div>
+                        <a href="https://www.google.com/maps?q=${issue.lat},${issue.lng}" target="_blank" rel="noopener noreferrer" class="bg-white hover:bg-slate-100 text-ku font-bold px-3 py-1.5 rounded-xl border border-slate-200 flex items-center gap-1.5 shadow-sm transition-all active:scale-95 text-xs">
+                            <i class="ph-bold ph-arrow-square-out text-sm"></i> Google Maps
+                        </a>
                     </div>
                 </div>
             `;
@@ -733,11 +739,8 @@
             }
 
             footer.innerHTML = `
-                <div class="flex flex-col sm:flex-row gap-2 w-full">
-                    <div class="flex-1">${actionButtons}</div>
-                    <button onclick="deleteIssue('${issue.id}')" class="px-3.5 py-3 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 font-semibold text-xs flex items-center justify-center gap-1 transition-colors" title="ลบรายการ">
-                        <i class="ph-bold ph-trash text-base"></i> ลบ
-                    </button>
+                <div class="w-full">
+                    ${actionButtons}
                 </div>
             `;
 
@@ -774,19 +777,6 @@
         function triggerResolveUpload(id) {
             currentResolvingIssueId = id;
             document.getElementById('resolve-image-upload').click();
-        }
-
-        async function deleteIssue(id) {
-            if (!confirm('คุณแน่ใจหรือว่าต้องการลบรายการแจ้งปัญหานี้?')) return;
-            try {
-                showToast('กำลังลบข้อมูล...', 'progress');
-                await db.collection("issues").doc(id).delete();
-                closeModal();
-                showToast('ลบรายการแจ้งปัญหาเรียบร้อยแล้ว', 'success');
-            } catch (err) {
-                console.error(err);
-                showToast('เกิดข้อผิดพลาดในการลบรายการ', 'error');
-            }
         }
 
         // --- Helpers ---
